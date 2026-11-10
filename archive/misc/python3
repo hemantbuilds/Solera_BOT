@@ -1,0 +1,48 @@
+import zmq
+import os
+import re
+
+# ZMQ IP to subscribe to
+ZMQ_IP = "tcp://127.0.0.1:5557"
+
+# List of shutdown-related patterns
+shutdown_patterns = [
+    r"(?i)shutdown Now",  # Case-insensitive match for "shutdown now"
+    r"(?i)Shut Down Now",  # Case-insensitive match for "shut down now"
+    r"(?i)Shutdown Now",    # Case-insensitive match for "shutdownnow"
+    r"(?i)Sleep Now",      # Case-insensitive match for "sleep now"
+]
+
+def is_shutdown_message(message):
+    """Check if the incoming message matches any of the shutdown patterns."""
+    for pattern in shutdown_patterns:
+        if re.search(pattern, message):
+            return True
+    return False
+
+def main():
+    # Set up ZMQ context and subscriber
+    context = zmq.Context()
+    socket = context.socket(zmq.SUB)
+    socket.connect(ZMQ_IP)
+    socket.setsockopt_string(zmq.SUBSCRIBE, "")  # Subscribe to all messages
+    print(f"Listening for messages on {ZMQ_IP}...")
+
+    while True:
+        try:
+            # Wait for a message
+            message = socket.recv_string()
+            print(f"Received message: {message}")
+
+            # Check if it's a shutdown message
+            if is_shutdown_message(message):
+                print("Shutdown command detected. Shutting down now...")
+                os.system("sudo shutdown now")
+                break  # Exit after shutdown (just in case)
+
+        except KeyboardInterrupt:
+            print("Exiting listener.")
+            break
+
+if __name__ == "__main__":
+    main()

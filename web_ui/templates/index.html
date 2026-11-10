@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solera Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Solera Bot</h1>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be appended here -->
+        </div>
+        <div class="chat-footer">
+            <div id="thinking" class="thinking" style="display: none;">
+                <img src="{{ url_for('static', filename='images/thinking.gif') }}" alt="Thinking...">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
